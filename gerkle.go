@@ -92,17 +92,53 @@ func getNumNodesLevel(tree Node, level int) (numNodes int) {
 
 // prints a vertical tree
 // https://stackoverflow.com/questions/13484943/print-a-binary-tree-in-a-pretty-way
-func printTree(nodes []Node) {
-	// so what do we need?
-	// we need a sense of how "deep" the tree is vertically
-	// and we need this for every "subtree," we do not need
-	// ∟ ͱ —
-	//
+func printTree(node Node) {
 	
-	// we want to recur down into the tree and then on the way back up
-	// find the "depth," but this is the same as storing info
-	// about the number of nodes before hand, so why don't we do
-	// that and save some compute?
+	// elbow := "∟"
+	//tee := "ͱ"
+	//dash := "—"
+	vert := "|"
+	numNodes := getNumNodes(node)
+	to_print := make([]string, numNodes)
+
+	temp_node := node
+	// deal with root
+	to_print = append(to_print,string(node.hash))	
+
+	count := 0
+	for temp_node.right.hash != nil {
+		temp_str := ""
+		for i := 0; i < count; i++ {
+			temp_str += vert+"   "
+		}
+		fmt.Println(vert)
+		// go right
+		to_print = append(to_print,temp_str+string(temp_node.right.hash))
+		temp_node = *temp_node.right
+		count += 1
+	}
+
+	for i,l := range to_print {
+		i = i
+		fmt.Printf("%x\n",l)
+	}
+	
+	// go left
+	//node.left.hash
+
+	//recur
+
+	
+	// first print the root
+	//fmt.Printf("%x.\n",string(node.hash[:2]))
+	// print a tee
+	//fmt.Println(tee+dash+dash+dash)
+	// 
+	
+	
+	// so what do we need?
+	// we need a sense of how deep the tree is vertically
+	// and we need this for every subtree
 	
 	
 }
@@ -113,5 +149,5 @@ func main () {
 		[]byte("some_utxo2"),
 		[]byte("some_utxo3")}
 	nodes := makeTree(data)
-	fmt.Println(nodes)
+	printTree(nodes[0])
 }
