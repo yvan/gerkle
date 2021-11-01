@@ -4,6 +4,17 @@ import "crypto/sha256"
 import "fmt"
 import "math"
 
+// make a simple stack type
+type stack []Node
+
+func Push() () {
+
+}
+
+func Pop() () {
+
+}
+
 // a node always has two children
 // unless it's a leaf then it has none
 type Node struct {
@@ -40,8 +51,6 @@ func makeLeaves(data [][]byte)(nodes []Node){
 		l,r := Node{hash:nil,left:nil,right:nil},
 		Node{hash:nil,left:nil,right:nil}
 		nodes = append(nodes, makeNode(d,l,r))
-		// fmt.Printf("processing datum %d in makeTree to node: ", i)
-		// fmt.Println(nodes[i])
 	}
 
 	return
@@ -90,58 +99,67 @@ func getNumNodesLevel(tree Node, level int) (numNodes int) {
 	}
 }
 
-// prints a vertical tree
-// https://stackoverflow.com/questions/13484943/print-a-binary-tree-in-a-pretty-way
-func printTree(node Node) {
-	
-	// elbow := "∟"
-	//tee := "ͱ"
-	//dash := "—"
-	vert := "|"
-	numNodes := getNumNodes(node)
-	to_print := make([]string, numNodes)
-
-	temp_node := node
-	// deal with root
-	to_print = append(to_print,string(node.hash))	
-
-	count := 0
-	for temp_node.right.hash != nil {
-		temp_str := ""
-		for i := 0; i < count; i++ {
-			temp_str += vert+"   "
+// verifies a tree by checking the hashes inside it
+// can do a fast check, or tell you which leaves
+// are responsible.
+func verifyTree(new_tree Node, old_tree Node, deep bool) (bool, []Node) {
+	if deep {
+		problem_nodes := []Node
+		new_node1 := new_tree
+		new_node2 := old_tree
+		//for (new_node1.left) {}
+		stack = append(new_tree,)
+		if new_node1.left != new_node2.left {
+			stack = append()
+			problem_nodes = append(return_nodes,new_node1.left)
+			
+			new_node1 := new_node1.left
+			new_node2 := new_node2.left
 		}
-		fmt.Println(vert)
-		// go right
-		to_print = append(to_print,temp_str+string(temp_node.right.hash))
-		temp_node = *temp_node.right
-		count += 1
+
+		// filter for only the leaf nodes
+		return leaf_nodes
+	} else {
+		return new_tree.hash == old_tree.hash, nil
 	}
 
-	for i,l := range to_print {
-		i = i
-		fmt.Printf("%x\n",l)
-	}
-	
-	// go left
-	//node.left.hash
-
-	//recur
-
-	
-	// first print the root
-	//fmt.Printf("%x.\n",string(node.hash[:2]))
-	// print a tee
-	//fmt.Println(tee+dash+dash+dash)
-	// 
-	
-	
-	// so what do we need?
-	// we need a sense of how deep the tree is vertically
-	// and we need this for every subtree
-	
 	
 }
+
+// prints a vertical tree
+// https://stackoverflow.com/questions/13484943/print-a-binary-tree-in-a-pretty-way
+// func printTree(node Node) {
+	
+// 	// elbow := "∟"
+// 	//tee := "ͱ"
+// 	//dash := "—"
+// 	vert := "|"
+// 	numNodes := getNumNodes(node)
+// 	to_print := make([]string, numNodes)
+
+// 	temp_node := node
+// 	// deal with root
+// 	to_print = append(to_print,string(node.hash))	
+
+// 	count := 1
+// 	for temp_node.right.hash != nil {
+// 		temp_str := ""
+// 		for i := 0; i < count; i++ {
+// 			temp_str += vert+"   "
+// 		}
+		
+// 		// go right
+// 		to_print = append(to_print,temp_str+string(temp_node.right.hash))
+// 		temp_node = *temp_node.right
+// 		count += 1
+// 	}
+
+// 	for i,l := range to_print {
+// 		i = i
+// 		fmt.Printf("%s\n",l)
+// 	}	
+	
+// }
 
 func main () {
 	data := [][]byte{[]byte("some_utxo0"),
