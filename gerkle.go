@@ -1,8 +1,9 @@
 package main
 
-import "crypto/sha256"
-import "fmt"
-import "math"
+import (
+	"math"
+	"crypto/sha256"
+)
 
 // make a simple stack type
 type stack []Node
@@ -15,8 +16,8 @@ func Pop(stack []Node) (Node, []Node) {
 	return stack[0],stack[1:]
 }
 
-// a node always has two children
-// unless it's a leaf then it has none
+// a node -- has two children with hash values
+// a leaf -- has two children with nil hash values
 type Node struct {
 	hash []byte
 	left *Node
@@ -68,7 +69,6 @@ func makeParents(nodes []Node) (new_nodes []Node){
 }
 
 func makeTree(data [][]byte) (root []Node){
-	//tree_info := make(map[int]map[string]int)
 	nodes := makeLeaves(data)
 	for len(nodes) > 1 {
 	 	nodes = makeParents(nodes)
@@ -106,7 +106,6 @@ func nodeIsLeaf(node Node) (bool) {
 // can do a fast check, or tell you which leaves
 // are responsible.
 func verifyTree(new_tree Node, old_tree Node, deep bool) (bool, []Node) {
-	fmt.Println()
 	// check that the trees have the same number of nodes
 	numNew := getNumNodes(new_tree)
 	numOld := getNumNodes(old_tree)
@@ -165,59 +164,6 @@ func verifyTree(new_tree Node, old_tree Node, deep bool) (bool, []Node) {
 }
 
 func main () {
-	data := [][]byte{[]byte("some_utxo0"),
-		[]byte("some_utxo1"),
-		[]byte("some_utxo2"),
-		[]byte("some_utxo3")}
-	data_two := [][]byte{[]byte("some_utxo0_diff"),
-		[]byte("some_utxo1"),
-		[]byte("some_utxo2"),
-		[]byte("some_utxo3")}
-	nodes := makeTree(data)
-	nodes_two := makeTree(data_two)
-	// fmt.Println(nodes[0])
-	// fmt.Println(nodes_two[0])
-	// verified, problems := verifyTree(nodes_two[0],nodes[0],false)
-	// fmt.Println(verified)
-	// fmt.Println(problems)
-	verified, problems := verifyTree(nodes_two[0],nodes[0],true)
-	fmt.Println(verified)
-	fmt.Println(problems)
-	fmt.Println(problems[0].left)
+
 }
 
-
-// prints a vertical tree
-// https://stackoverflow.com/questions/13484943/print-a-binary-tree-in-a-pretty-way
-// func printTree(node Node) {
-	
-// 	// elbow := "∟"
-// 	//tee := "ͱ"
-// 	//dash := "—"
-// 	vert := "|"
-// 	numNodes := getNumNodes(node)
-// 	to_print := make([]string, numNodes)
-
-// 	temp_node := node
-// 	// deal with root
-// 	to_print = append(to_print,string(node.hash))	
-
-// 	count := 1
-// 	for temp_node.right.hash != nil {
-// 		temp_str := ""
-// 		for i := 0; i < count; i++ {
-// 			temp_str += vert+"   "
-// 		}
-		
-// 		// go right
-// 		to_print = append(to_print,temp_str+string(temp_node.right.hash))
-// 		temp_node = *temp_node.right
-// 		count += 1
-// 	}
-
-// 	for i,l := range to_print {
-// 		i = i
-// 		fmt.Printf("%s\n",l)
-// 	}	
-	
-// }

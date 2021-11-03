@@ -1,8 +1,9 @@
 package main
 
-import "crypto/sha256"
-import "testing"
-//import "fmt"
+import (
+	"testing"
+	"crypto/sha256"
+)
 
 // a test to see that 1- the function returns
 // a node with a hash inside it and two null
