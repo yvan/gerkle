@@ -131,8 +131,61 @@ func TestNodeIsLeaf(t *testing.T) {
 	}
 }
 
-
 func TestVerifyTree(t *testing.T) {
+	data_one := [][]byte{[]byte("some_utxo0"),
+		[]byte("some_utxo1"),
+		[]byte("some_utxo2"),
+		[]byte("some_utxo3")}
+	data_two := [][]byte{[]byte("some_utxo0_diff"),
+		[]byte("some_utxo1"),
+		[]byte("some_utxo2"),
+		[]byte("some_utxo3")}
+	data_three := [][]byte{[]byte("some_utxo0"),
+		[]byte("some_utxo1"),
+		[]byte("some_utxo2"),
+		[]byte("some_utxo3")}	
+	nodes_one := makeTree(data_one)
+	nodes_two := makeTree(data_two)
+	nodes_three := makeTree(data_three)
 
+	// these are the tests for shallow verification at the root node
+	
+	// test that verification for two different trees is false
+	verified, problems := verifyTree(nodes_two[0],nodes_one[0],false)
+	if verified {
+		t.Errorf("root verification returned true but should return false, root one: %v, root two: %v", nodes_two[0], nodes_one[0])
+	}	
+	// test that the number of problem leaf nodes is 1 if verification is false
+	if len(problems) != 0 {
+		t.Errorf("root verification should return 0 values, but returned %d", len(problems))
+	}
+	// test that verification for two identical trees is true
+	verified, _ = verifyTree(nodes_three[0],nodes_one[0],false)
+	if !verified {
+		t.Errorf("root verification returned false but should return true, root one: %v, root two: %v", nodes_three[0], nodes_one[0])
+	}
 
+	// these are the tests for deep verification
+
+	// deep verification of identical trees
+	verified, problems = verifyTree(nodes_three[0],nodes_one[0],true)
+	if !verified {
+		t.Errorf("two identical trees should be verified but are not, tree one root: %v, tre two root: %v", nodes_three[0], nodes_one[0])
+	}
+
+	if len(problems) > 0 {
+		t.Errorf("problems generated from two identical trees should be 0, but are %d, the problems: %v", len(problems), problems)
+	}
+
+	// deep verification of differing trees
+	verified, problems = verifyTree(nodes_two[0],nodes_one[0],true)
+
+	// different tree should not verify
+	if verified {
+		t.Errorf("two different trees should not verify, but they did, tree root one: %v, tree root two: %v", nodes_two[0], nodes_one[0] )
+	}
+
+	if len(problems) != 1 {
+		t.Errorf("two trees with one node differing should return one problem node, but got %d problem nodes, the problems: %v", len(problems), problems)
+	}
 }

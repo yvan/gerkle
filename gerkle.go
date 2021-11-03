@@ -132,7 +132,6 @@ func verifyTree(new_tree Node, old_tree Node, deep bool) (bool, []Node) {
 			// if we are not a nil node (nil nodes are not
 			// part of the tree
 			if (node_new.left != nil) && (node_new.right != nil) {
-
 				
 				// push it's children to the stack
 				stack_old = Push(stack_old, *node_old.left)
