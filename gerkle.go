@@ -48,8 +48,7 @@ func makeNode(data []byte, left Node, right Node) (n Node) {
 func makeLeaves(data [][]byte)(nodes []Node){
 	//take the nodes by 1 and made nodes
 	for _, d := range data {
-		l,r := Node{hash:nil,left:nil,right:nil},
-		Node{hash:nil,left:nil,right:nil}
+		l,r := Node{hash:nil,left:nil,right:nil},Node{hash:nil,left:nil,right:nil}
 		nodes = append(nodes, makeNode(d,l,r))
 	}
 
@@ -101,7 +100,8 @@ func getNumNodesLevel(tree Node, level int) (numNodes int) {
 
 func nodeIsLeaf(node Node) (bool) {
 	fmt.Println("check2")
-	fmt.Println(node.left)
+	fmt.Printf("%x\n",node.left)
+	fmt.Printf("%x\n",node.right)
 	return (node.left.hash == nil) && (node.right.hash == nil)
 }
 
@@ -119,9 +119,9 @@ func verifyTree(new_tree Node, old_tree Node, deep bool) (bool, []Node) {
 	// if the trees have the same number of nodes
 	// then check each node against its analog
 	if deep {		
-		problem_nodes := make([]Node, numNew)
-		stack_old := make(stack,numOld)
-		stack_new := make(stack,numNew)
+		var problem_nodes []Node
+		var stack_old stack
+		var stack_new stack
 		stack_old = Push(stack_old, old_tree)
 		stack_new = Push(stack_new, new_tree)
 		var node_old Node
@@ -129,39 +129,51 @@ func verifyTree(new_tree Node, old_tree Node, deep bool) (bool, []Node) {
 
 		// while there's nodes in the stack
 		for (len(stack_old) > 0) && (len(stack_new) > 0) {
+			fmt.Println("what is in our stack?")
+			fmt.Println(stack_old)
+			fmt.Println(stack_new)
 			// get two nodes
 			node_old, stack_old = Pop(stack_old)
 			node_new, stack_new = Pop(stack_new)
 			// if we are not a nil node (nil nodes are not
 			// part of the tree
-			if (node_old.left != nil) && (node_old.right != nil) {
+			if (node_new.left != nil) && (node_new.right != nil) {
+
+				fmt.Println()
 				// push it's children to the stack
-				Push(stack_old, *node_old.left)
-				Push(stack_old, *node_old.right)
-				Push(stack_new, *node_new.left)
-				Push(stack_new, *node_new.right)
+				stack_old = Push(stack_old, *node_old.left)
+				stack_old = Push(stack_old, *node_old.right)
+				stack_new = Push(stack_new, *node_new.left)
+				stack_new = Push(stack_new, *node_new.right)
 				
 				// examine the nodes
 				// fmt.Println("check0")
 				// fmt.Println(string(node_old.hash))
 				// fmt.Println(string(node_new.hash))
 				if string(node_old.hash) != string(node_new.hash) {
+					fmt.Println("appending problem node")
+					fmt.Println(node_new.hash)
+					fmt.Println(node_new.left)
+					fmt.Println(node_new.right)
 					problem_nodes = append(problem_nodes,node_new)
 				}
-			}			
+			}
 		}
+
+		fmt.Println("checking problem nodes")
+		fmt.Println(problem_nodes)
 		// if we have problem nodes
 		// get only the leaves
 		if len(problem_nodes) > 0 {			
 			var problem_leaves []Node	
-			for _,node := range problem_nodes {
-				if nodeIsLeaf(node){
-					problem_leaves = append(problem_leaves,node)
+			for _,n := range problem_nodes {
+				if nodeIsLeaf(n){
+					problem_leaves = append(problem_leaves,n)
 				}
-			}
-			return true, problem_leaves
+			}			
+			return false, problem_leaves
 		} else {
-			return false, nil
+			return true, nil
 		}
 	} else {
 		return string(new_tree.hash) == string(old_tree.hash), nil
@@ -187,6 +199,7 @@ func main () {
 	verified, problems := verifyTree(nodes_two[0],nodes[0],true)
 	fmt.Println(verified)
 	fmt.Println(problems)
+	fmt.Println(problems[0].left)
 }
 
 
