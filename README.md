@@ -6,11 +6,3 @@ gerkle is a merkle tree implementation in go. i decided to use go because i'm lo
 why didn't i use cmp for the tests?
 
 well i felt writing my own function to compare the structs was easier than debugging weird shit like "panic: cannot handle unexported field at {main.Node}.hash:" or issues with go modules, GOPATH, etc.chock it up to beginners naivety.
-
-micro todo:
-
-1 - function to create lists of leaves  (f)
-2 - function to create trees (f)
-3 - function to pretty print the trees 
-4 - we need a function that can check trees to verify if they've changed and quickly locate the changed leaves
-5 - 

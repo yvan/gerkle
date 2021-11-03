@@ -7,12 +7,12 @@ import "math"
 // make a simple stack type
 type stack []Node
 
-func Push() () {
-
+func Push(stack []Node, n Node) ([]Node) {
+	return append(stack,n)
 }
 
-func Pop() () {
-
+func Pop(stack []Node) (Node, []Node) {
+	return stack[0],stack[1:]
 }
 
 // a node always has two children
@@ -99,32 +99,96 @@ func getNumNodesLevel(tree Node, level int) (numNodes int) {
 	}
 }
 
+func nodeIsLeaf(node Node) (bool) {
+	fmt.Println("check2")
+	fmt.Println(node.left)
+	return (node.left.hash == nil) && (node.right.hash == nil)
+}
+
 // verifies a tree by checking the hashes inside it
 // can do a fast check, or tell you which leaves
 // are responsible.
 func verifyTree(new_tree Node, old_tree Node, deep bool) (bool, []Node) {
-	if deep {
-		problem_nodes := []Node
-		new_node1 := new_tree
-		new_node2 := old_tree
-		//for (new_node1.left) {}
-		stack = append(new_tree,)
-		if new_node1.left != new_node2.left {
-			stack = append()
-			problem_nodes = append(return_nodes,new_node1.left)
-			
-			new_node1 := new_node1.left
-			new_node2 := new_node2.left
-		}
-
-		// filter for only the leaf nodes
-		return leaf_nodes
-	} else {
-		return new_tree.hash == old_tree.hash, nil
+	fmt.Println()
+	// check that the trees have the same number of nodes
+	numNew := getNumNodes(new_tree)
+	numOld := getNumNodes(old_tree)
+	if numNew != numOld {
+		return false, nil
 	}
+	// if the trees have the same number of nodes
+	// then check each node against its analog
+	if deep {		
+		problem_nodes := make([]Node, numNew)
+		stack_old := make(stack,numOld)
+		stack_new := make(stack,numNew)
+		stack_old = Push(stack_old, old_tree)
+		stack_new = Push(stack_new, new_tree)
+		var node_old Node
+		var node_new Node
 
-	
+		// while there's nodes in the stack
+		for (len(stack_old) > 0) && (len(stack_new) > 0) {
+			// get two nodes
+			node_old, stack_old = Pop(stack_old)
+			node_new, stack_new = Pop(stack_new)
+			// if we are not a nil node (nil nodes are not
+			// part of the tree
+			if (node_old.left != nil) && (node_old.right != nil) {
+				// push it's children to the stack
+				Push(stack_old, *node_old.left)
+				Push(stack_old, *node_old.right)
+				Push(stack_new, *node_new.left)
+				Push(stack_new, *node_new.right)
+				
+				// examine the nodes
+				// fmt.Println("check0")
+				// fmt.Println(string(node_old.hash))
+				// fmt.Println(string(node_new.hash))
+				if string(node_old.hash) != string(node_new.hash) {
+					problem_nodes = append(problem_nodes,node_new)
+				}
+			}			
+		}
+		// if we have problem nodes
+		// get only the leaves
+		if len(problem_nodes) > 0 {			
+			var problem_leaves []Node	
+			for _,node := range problem_nodes {
+				if nodeIsLeaf(node){
+					problem_leaves = append(problem_leaves,node)
+				}
+			}
+			return true, problem_leaves
+		} else {
+			return false, nil
+		}
+	} else {
+		return string(new_tree.hash) == string(old_tree.hash), nil
+	}	
 }
+
+func main () {
+	data := [][]byte{[]byte("some_utxo0"),
+		[]byte("some_utxo1"),
+		[]byte("some_utxo2"),
+		[]byte("some_utxo3")}
+	data_two := [][]byte{[]byte("some_utxo0_diff"),
+		[]byte("some_utxo1"),
+		[]byte("some_utxo2"),
+		[]byte("some_utxo3")}
+	nodes := makeTree(data)
+	nodes_two := makeTree(data_two)
+	// fmt.Println(nodes[0])
+	// fmt.Println(nodes_two[0])
+	// verified, problems := verifyTree(nodes_two[0],nodes[0],false)
+	// fmt.Println(verified)
+	// fmt.Println(problems)
+	verified, problems := verifyTree(nodes_two[0],nodes[0],true)
+	fmt.Println(verified)
+	fmt.Println(problems)
+}
+
 
 // prints a vertical tree
 // https://stackoverflow.com/questions/13484943/print-a-binary-tree-in-a-pretty-way
@@ -160,12 +224,3 @@ func verifyTree(new_tree Node, old_tree Node, deep bool) (bool, []Node) {
 // 	}	
 	
 // }
-
-func main () {
-	data := [][]byte{[]byte("some_utxo0"),
-		[]byte("some_utxo1"),
-		[]byte("some_utxo2"),
-		[]byte("some_utxo3")}
-	nodes := makeTree(data)
-	printTree(nodes[0])
-}
