@@ -117,6 +117,7 @@ func TestNodeIsLeaf(t *testing.T) {
 		[]byte("some_utxo3")}	
 	nodes := makeTree(data)
 	test_hash := sha256.Sum256([]byte("some_utxo3"))
+	check_node_root := nodes[0]
 	check_node := nodes[0].right.right
 	if (string(test_hash[:]) != string(check_node.hash)) {
 		t.Errorf("right most node does not match")
@@ -124,5 +125,14 @@ func TestNodeIsLeaf(t *testing.T) {
 		if !nodeIsLeaf(*check_node) {
 			t.Errorf("the node that should be a leaf is not a leaf, node: %v", *check_node)
 		}
+		if nodeIsLeaf(check_node_root) {
+			t.Errorf("root node of multi node tree is beingclassified as leaf, should not be, node %v", check_node_root)
+		}
 	}
+}
+
+
+func TestVerifyTree(t *testing.T) {
+
+
 }
