@@ -109,3 +109,20 @@ func TestGetNumNodesLevel(t *testing.T) {
 		t.Errorf("tree level 3 should have %d nodes, but got %d", correctNodes, n)
 	}
 }
+
+func TestNodeIsLeaf(t *testing.T) {
+	data := [][]byte{[]byte("some_utxo0"),
+		[]byte("some_utxo1"),
+		[]byte("some_utxo2"),
+		[]byte("some_utxo3")}	
+	nodes := makeTree(data)
+	test_hash := sha256.Sum256([]byte("some_utxo3"))
+	check_node := nodes[0].right.right
+	if (string(test_hash[:]) != string(check_node.hash)) {
+		t.Errorf("right most node does not match")
+	} else {
+		if !nodeIsLeaf(*check_node) {
+			t.Errorf("the node that should be a leaf is not a leaf, node: %v", *check_node)
+		}
+	}
+}
